@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LemonArp
@@ -185,7 +186,7 @@ namespace LemonArp
 
         public void ARPStorm(List<IPAddress> requestIPList)
         {
-
+            d = 0;
             List<Packet> packetList = new List<Packet>();
             foreach (var ip in requestIPList)
             {
@@ -202,7 +203,8 @@ namespace LemonArp
                     foreach (var packet in packetList)
                     {
                         _device.SendPacket(packet);
-                        System.Threading.Thread.Sleep(50);
+                        System.Threading.Thread.Sleep(200);
+                        d++;
                     }
                 }
             });
@@ -241,6 +243,7 @@ namespace LemonArp
         public int d = 0;
         private void StartARPSpoofing(Packet packet)
         {
+            d = 0;
             StopARPSpoofing();
             _device.Open(DeviceMode.Promiscuous, 20);
             arpSpoofingThread = new System.Threading.Thread(() =>
@@ -248,6 +251,7 @@ namespace LemonArp
                 while (true)
                 {
                     _device.SendPacket(packet);
+                    Thread.Sleep(200);
                     d++;
                 }
             });
