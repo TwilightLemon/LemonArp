@@ -82,16 +82,19 @@ namespace LemonArp
 
         private void cmbDeviceList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var device = deviceList[(sender as ComboBox).SelectedIndex];
-            arpTool = new ArpTool(device);
-            arpTool.ScanStopedEvent += arpTool_ScanStopedEvent;
-            arpTool.ResolvedEvent += arpTool_ResolvedEvent;
-            txbGetwayIP.Text = arpTool.GetwayIP.ToString();
-            txbGetwayMAC.Text = arpTool.GetwayMAC.ToString();
-            txbLocalIP.Text = arpTool.LocalIP.ToString();
-            txbLocalMAC.Text = arpTool.LocalMAC.ToString();
-            txbStartIP.Text = txbEndIP.Text = arpTool.GetwayIP.ToString();
-
+            try
+            {
+                var device = deviceList[(sender as ComboBox).SelectedIndex];
+                arpTool = new ArpTool(device);
+                arpTool.ScanStopedEvent += arpTool_ScanStopedEvent;
+                arpTool.ResolvedEvent += arpTool_ResolvedEvent;
+                txbGetwayIP.Text = arpTool.GetwayIP.ToString();
+                txbGetwayMAC.Text = arpTool.GetwayMAC.ToString();
+                txbLocalIP.Text = arpTool.LocalIP.ToString();
+                txbLocalMAC.Text = arpTool.LocalMAC.ToString();
+                txbStartIP.Text = txbEndIP.Text = arpTool.GetwayIP.ToString();
+            }
+            catch { }
         }
 
         void arpTool_ScanStopedEvent(object sender, EventArgs e)
@@ -104,7 +107,8 @@ namespace LemonArp
         {
             if ((sender as ListBox).SelectedIndex >= 0)
             {
-                btnArpGetway.Enabled = true;
+                if(btnScan.Text=="搜索") 
+                   btnArpGetway.Enabled = true;
             }
         }
         private void btnArpGetway_Click(object sender, EventArgs e)
