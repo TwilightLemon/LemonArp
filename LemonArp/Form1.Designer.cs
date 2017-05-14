@@ -1,6 +1,6 @@
 ﻿namespace LemonArp
 {
-    partial class MainForm
+    partial class Form1
     {
         /// <summary>
         /// 必需的设计器变量。
@@ -48,6 +48,7 @@
             this.btnArpStorm = new System.Windows.Forms.Button();
             this.btnArpGetway = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.label6 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // cmbDeviceList
@@ -225,13 +226,24 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // MainForm
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.BackColor = System.Drawing.Color.Transparent;
+            this.label6.Location = new System.Drawing.Point(322, 397);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(143, 17);
+            this.label6.TabIndex = 21;
+            this.label6.Text = "©Twilight./Lemon 2017";
+            // 
+            // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(474, 416);
-            this.Controls.Add(this.txbGetwayMAC);
             this.Controls.Add(this.btnArpStorm);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.txbGetwayMAC);
             this.Controls.Add(this.txbEndIP);
             this.Controls.Add(this.btnArpGetway);
             this.Controls.Add(this.txbStartIP);
@@ -253,7 +265,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "MainForm";
+            this.Name = "Form1";
             this.Text = "小萌ARP断网攻击";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
@@ -282,6 +294,6 @@
         private System.Windows.Forms.Button btnArpGetway;
         private System.Windows.Forms.Button btnArpStorm;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Label label6;
     }
 }
-

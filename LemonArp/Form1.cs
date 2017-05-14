@@ -1,6 +1,4 @@
-﻿using PacketDotNet;
-using SharpPcap;
-using SharpPcap.LibPcap;
+﻿using SharpPcap.LibPcap;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,21 +8,20 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LemonArp
 {
-    public partial class MainForm : CCWin.Skin_Mac
+    public partial class Form1 : CCWin.Skin_Mac
     {
-        private LibPcapLiveDeviceList deviceList; 
+        private LibPcapLiveDeviceList deviceList;
 
         private ArpTool arpTool = null;
 
         private List<Tuple<IPAddress, PhysicalAddress>> IPMACMapList;
 
-        public MainForm()
+        public Form1()
         {
             InitializeComponent();
             IPMACMapList = new List<Tuple<IPAddress, PhysicalAddress>>();
@@ -118,7 +115,7 @@ namespace LemonArp
                 timer1.Start();
                 var destIP = IPMACMapList[lsbIPMap.SelectedIndex].Item1;
                 var destMAC = IPMACMapList[lsbIPMap.SelectedIndex].Item2;
-                arpTool.ARPSpoofing1(destIP,destMAC);
+                arpTool.ARPSpoofing1(destIP, destMAC);
                 button.Text = "停止";
             }
             else
@@ -153,7 +150,7 @@ namespace LemonArp
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            this.Text = "小萌ARP断网攻击    攻击次数:"+arpTool.d;
+            this.Text = "小萌ARP断网攻击    攻击次数:" + arpTool.d;
         }
     }
 }
