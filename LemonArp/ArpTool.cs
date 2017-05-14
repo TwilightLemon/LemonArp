@@ -203,6 +203,7 @@ namespace LemonArp
                     foreach (var packet in packetList)
                     {
                         _device.SendPacket(packet);
+                        System.Threading.Thread.Sleep(50);
                         d++;
                     }
                 }
@@ -250,6 +251,7 @@ namespace LemonArp
                 while (true)
                 {
                     _device.SendPacket(packet);
+                    Thread.Sleep(50);
                     d++;
                 }
             });
