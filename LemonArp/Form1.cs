@@ -7,20 +7,30 @@ using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LemonArp
 {
-    public partial class Form1 : CCWin.Skin_Mac
+    public partial class Form1 : Form
     {
         private LibPcapLiveDeviceList deviceList;
 
         private ArpTool arpTool = null;
 
         private List<Tuple<IPAddress, PhysicalAddress>> IPMACMapList;
-
+        private const int CS_DropSHADOW = 0x20000;
+        private const int GCL_STYLE = (-26);
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern int SetClassLong(IntPtr hwnd, int nIndex, int dwNewLong);
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern int GetClassLong(IntPtr hwnd, int nIndex);
+        private void SetShadow()
+        {
+            SetClassLong(this.Handle, GCL_STYLE, GetClassLong(this.Handle, GCL_STYLE) | CS_DropSHADOW);
+        }
         public Form1()
         {
             InitializeComponent();
@@ -36,7 +46,21 @@ namespace LemonArp
                 throw new Exception("没有发现本机上的网络设备");
             }
 
-            cmbDeviceList.DataSource = deviceList;
+            foreach (var device in deviceList)
+            {
+                try
+                {
+                    arpTool = new ArpTool(device);
+                    arpTool.ScanStopedEvent += arpTool_ScanStopedEvent;
+                    arpTool.ResolvedEvent += arpTool_ResolvedEvent;
+                    label2.Text = "网关: " + arpTool.GetwayIP + "  " + arpTool.GetwayMAC
+                        + "\r\n本地: " + arpTool.LocalIP + "  " + arpTool.LocalMAC;
+                    txbStartIP.Text = txbEndIP.Text = arpTool.GetwayIP.ToString();
+                    if (arpTool.GetwayIP.ToString() != "")
+                        return;
+                }
+                catch { }
+            }
         }
 
         private void btnScan_Click(object sender, EventArgs e)
@@ -79,24 +103,6 @@ namespace LemonArp
                 lsbIPMap.Items.Add(string.Format("{0} -> {1}", e.IPAddress, e.PhysicalAddress));
             }));
         }
-
-        private void cmbDeviceList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                var device = deviceList[(sender as ComboBox).SelectedIndex];
-                arpTool = new ArpTool(device);
-                arpTool.ScanStopedEvent += arpTool_ScanStopedEvent;
-                arpTool.ResolvedEvent += arpTool_ResolvedEvent;
-                txbGetwayIP.Text = arpTool.GetwayIP.ToString();
-                txbGetwayMAC.Text = arpTool.GetwayMAC.ToString();
-                txbLocalIP.Text = arpTool.LocalIP.ToString();
-                txbLocalMAC.Text = arpTool.LocalMAC.ToString();
-                txbStartIP.Text = txbEndIP.Text = arpTool.GetwayIP.ToString();
-            }
-            catch { }
-        }
-
         void arpTool_ScanStopedEvent(object sender, EventArgs e)
         {
             this.Invoke(new Action(() => { btnScan.Text = "搜索"; }));
@@ -105,10 +111,13 @@ namespace LemonArp
 
         private void lsbIPMap_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if ((sender as ListBox).SelectedIndex >= 0)
+            if ((sender as TransparentListBox).SelectedIndex >= 0)
             {
-                if(btnScan.Text=="搜索") 
-                   btnArpGetway.Enabled = true;
+                if (btnScan.Text == "搜索")
+                {
+                    btnArpGetway.Enabled = true;
+                    btnArpStorm.Enabled = true;
+                }
             }
         }
         private void btnArpGetway_Click(object sender, EventArgs e)
@@ -154,7 +163,12 @@ namespace LemonArp
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            this.Text = "小萌ARP断网攻击    攻击次数:" + arpTool.d;
+            label1.Text = "小萌ARP断网攻击    攻击次数:" + arpTool.d;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            Environment.Exit(0);
         }
     }
 }
